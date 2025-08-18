@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>PB • Parth Vinay Bhagwat • Portfolio</title>
+<style>
+    /* RESET + FONT */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+        font-family: -apple-system, BlinkMacSystemFont, "Helvetica Neue", sans-serif;
+        background: #000;
+        color: #f5f5f7;
+        overflow-x: hidden;
+        line-height: 1.5;
+    }
+    a { text-decoration: none; color: inherit; }
+    img { max-width: 100%; display: block; }
+
+    /* HEADER NAV */
+    header {
+        position: fixed;
+        top: 0;
+        left: 0;
+        right: 0;
+        height: 48px;
+        background: rgba(0,0,0,0.72);
+        backdrop-filter: blur(20px);
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        padding: 0 2rem;
+        transition: background 0.3s ease;
+        z-index: 9999;
+    }
+    header.scrolled { background: rgba(0,0,0,0.9); }
+    nav { display: flex; align-items: center; }
+    nav a { margin: 0 1rem; font-size: 0.9rem; font-weight: 500; opacity: 0.8; transition: opacity 0.3s ease; color: #fff; }
+    nav a:hover { opacity: 1; }
+    .social-nav { display: flex; align-items: center; margin-left: auto; }
+    .social-nav a { margin-left: 1rem; opacity: 0.8; transition: opacity 0.3s ease; }
+    .social-nav a:hover { opacity: 1; }
+    .social-nav svg { width: 20px; height: 20px; fill: currentColor; vertical-align: middle; }
+
+    /* HERO SECTION */
+    .hero {
+        height: 100vh;
+        background: linear-gradient(to bottom, #111, #000);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        text-align: center;
+        padding: 2rem;
+        opacity: 0;
+        transform: translateY(30px);
+        transition: opacity 1s ease, transform 1s ease;
+    }
+    .hero.visible { opacity: 1; transform: translateY(0); }
+    .hero h1 { font-size: 3rem; font-weight: 600; margin-bottom: 1rem; color: #fff; }
+    .hero p { font-size: 1.25rem; color: #ccc; margin-bottom: 1.5rem; }
+
+    /* VIEW DEMO / RESUME BUTTON */
+    .view-demo {
+        display: inline-block;
+        padding: 0.5rem 1rem;
+        font-weight: 600;
+        border-radius: 24px;
+        color: #000;
+        background: #fff;
+        position: relative;
+        overflow: hidden;
+        transition: color 0.3s ease;
+    }
+    .view-demo::before {
+        content: "";
+        position: absolute;
+        inset: 0;
+        border-radius: 24px;
+        padding: 1px;
+        background: linear-gradient(90deg, red, orange, yellow, green, blue, indigo, violet);
+        -webkit-mask:
+            linear-gradient(#fff 0 0) content-box,
+            linear-gradient(#fff 0 0);
+        -webkit-mask-composite: xor;
+        mask-composite: exclude;
+        opacity: 0;
+        transition: opacity 0.4s ease;
+    }
+    .view-demo:hover::before { opacity: 1; }
+
+    /* SECTION TITLES */
+    section { padding: 6rem 1rem; max-width: 1200px; margin: 0 auto; }
+    section h2 { font-size: 2rem; font-weight: 600; margin-bottom: 2rem; text-align: center; color: #fff; }
+
+    /* PROJECT GRID */
+    .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(300px,1fr)); gap: 2rem; }
+    .card {
+        background: #111;
+        border-radius: 18px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6);
+        padding: 1.5rem;
+        text-align: center;
+        transform: translateY(30px);
+        opacity: 0;
+        transition: transform 0.8s ease, opacity 0.8s ease;
+        color: #f5f5f7;
+    }
+    .card.visible { transform: translateY(0); opacity: 1; }
+
+    /* CARD HOVER - subtle lift only */
+    .card:hover {
+        transform: translateY(-6px);
+        box-shadow: 0 4px 12px rgba(0,0,0,0.6); 
+    }
+
+    .card img { border-radius: 12px; margin-bottom: 1rem; }
+    .card h3 { font-size: 1.25rem; margin-bottom: 0.5rem; color: inherit; }
+    .card p { font-size: 0.95rem; color: inherit; margin-bottom: 1rem; }
+
+    /* SKILLS SECTION */
+    .skills { text-align: center; }
+    .skill-badge {
+        display: inline-block;
+        margin: 0.4rem;
+        padding: 0.5rem 1rem;
+        background: #111;
+        border-radius: 20px;
+        font-size: 0.9rem;
+        box-shadow: 0 1px 3px rgba(0,0,0,0.5);
+        color: #fff;
+        opacity: 0;
+        transform: translateY(20px);
+        transition: opacity 0.6s ease, transform 0.6s ease;
+    }
+    .skill-badge.visible { opacity: 1; transform: translateY(0); }
+
+    /* CONTACT */
+    .contact p { text-align: center; font-size: 1.1rem; color: #ccc; }
+    .contact a { color: #fff; text-decoration: underline; }
+    .social-links { display: flex; justify-content: center; gap: 1.5rem; margin-top: 1rem; }
+    .social-links a { color: #f5f5f7; opacity: 0.8; transition: opacity 0.3s ease; }
+    .social-links a:hover { opacity: 1; }
+    .social-links svg { width: 28px; height: 28px; fill: currentColor; }
+
+    /* FOOTER */
+    footer { text-align: center; padding: 2rem; font-size: 0.85rem; color: #666; }
+
+    /* ANIMATION ON SCROLL */
+    .fade-in { opacity: 0; transform: translateY(30px); transition: opacity 1s ease, transform 1s ease; }
+    .fade-in.visible { opacity: 1; transform: translateY(0); }
+
+    /* RESPONSIVE */
+    @media(max-width:600px){
+        .hero h1 { font-size: 2.2rem; }
+        nav a { margin: 0 0.5rem; font-size: 0.8rem; }
+        header { padding: 0 1rem; }
+        nav { display: none; }
+        .social-nav { margin-left: auto; }
+        header { justify-content: flex-end; }
+    }
+</style>
+</head>
+<body>
+
+<header>
+    <nav>
+        <a href="#about">About</a>
+        <a href="#projects">Projects</a>
+        <a href="#skills">Skills</a>
+        <a href="#contact">Contact</a>
+    </nav>
+    <div class="social-nav">
+        <a href="https://www.linkedin.com/in/parthbhagwat/" target="_blank" aria-label="LinkedIn Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.23 0H1.77C.79 0 0 .79 0 1.77v20.46c0 .98.79 1.77 1.77 1.77h20.46c.98 0 1.77-.79 1.77-1.77V1.77c0-.98-.79-1.77-1.77-1.77zM7.5 20.5H3.5V9.5h4zM5.5 8c-1.38 0-2.5-1.12-2.5-2.5S4.12 3 5.5 3s2.5 1.12 2.5 2.5S6.88 8 5.5 8zm15 12.5h-4V14.28c0-1.87-.04-3.64-2.22-3.64-2.22 0-2.56 1.73-2.56 3.53v6.33h-4V9.5h4v1.86c.55-1.07 1.95-2.23 3.92-2.23 4.2 0 4.97 2.76 4.97 6.33V20.5z"/></svg>
+        </a>
+        <a href="https://github.com/parthbhagwat22" target="_blank" aria-label="GitHub Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.6.111.82-.26.82-.576v-2.09c-3.338.724-4.04-1.61-4.04-1.61-.546-1.386-1.332-1.755-1.332-1.755-1.088-.745.083-.73.083-.73 1.205.084 1.838 1.238 1.838 1.238 1.07 1.835 2.809 1.304 3.492.997.108-.775.419-1.304.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.3-1.688-8.528.257-8.736 1.916.208 3.513 1.554 4.09 3.992.577-.28 1.2-.423 1.832-.423.633 0 1.255.143 1.832.423.577-2.438 2.174-3.784 4.09-3.992 1.945.208.581 8.436.457 8.736.768.84 1.236 1.91 1.236 3.22 0 4.61-2.802 5.626-5.474 5.926.432.37.823 1.102.823 2.222V23.79c0 .316.216.687.828.576C20.562 21.8 24 17.302 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+    </div>
+</header>
+
+<section class="hero fade-in">
+    <h1>Parth Vinay Bhagwat</h1>
+    <p>AI & Data Science Developer turning raw data into deployable, decision-making tools.</p>
+    <a href="https://drive.google.com/file/d/1clwl3TvUqzssHmBt65OsejgXQU9O2b0L/view?usp=drive_link" target="_blank" class="view-demo">View Resume</a>
+</section>
+
+<section id="about" class="fade-in">
+    <h2>About Me</h2>
+    <p style="text-align:center; max-width:800px; margin:0 auto; color:#bbb;">
+        I am an AI & Data Science Developer specializing in NLP, predictive modeling, and deploying intelligent solutions across domains like career analytics, automotive pricing, and content optimization. Passionate about Generative AI, LLMs, and prompt engineering, I transform complex data into actionable insights and scalable applications.
+    </p>
+</section>
+
+<section id="projects">
+    <h2>Featured Projects</h2>
+    <div class="grid">
+        <div class="card project-card">
+            <h3>SkillFitPro – Career Skill Analyzer</h3>
+            <p>AI-powered tool that analyzes resumes vs. job descriptions, highlights skill gaps, and generates PDF reports.</p>
+            <a href="https://skillfitpro.streamlit.app/" target="_blank" class="view-demo">View Demo</a>
+        </div>
+        <div class="card project-card">
+            <h3>AI Prompt Optimizer</h3>
+            <p>NLP utility that converts vague prompts into optimized inputs for clearer, more precise LLM responses.</p>
+            <a href="https://aipromppt.streamlit.app/" target="_blank" class="view-demo">View Demo</a>
+        </div>
+        <div class="card project-card">
+            <h3>Used Car Price Prediction Model</h3>
+            <p>RandomForestRegressor model (R² = 0.88) deployed with Streamlit for instant automotive price predictions.</p>
+            <a href="https://carwise-ai.streamlit.app/" target="_blank" class="view-demo">View Demo</a>
+        </div>
+    </div>
+</section>
+
+<section id="skills" class="skills">
+    <h2>Skills</h2>
+    <div>
+        <span class="skill-badge">Python</span>
+        <span class="skill-badge">SQL</span>
+        <span class="skill-badge">Machine Learning</span>
+        <span class="skill-badge">NLP</span>
+        <span class="skill-badge">Generative AI</span>
+        <span class="skill-badge">Streamlit</span>
+        <span class="skill-badge">Power BI</span>
+        <span class="skill-badge">GitHub</span>
+    </div>
+</section>
+
+<section id="contact" class="contact fade-in">
+    <h2>Contact</h2>
+    <p>Email me at <a href="mailto:parthbhagwat.ds@gmail.com">parthbhagwat.ds@gmail.com</a></p>
+    <div class="social-links">
+        <a href="https://www.linkedin.com/in/parthbhagwat/" target="_blank" aria-label="LinkedIn Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M22.23 0H1.77C.79 0 0 .79 0 1.77v20.46c0 .98.79 1.77 1.77 1.77h20.46c.98 0 1.77-.79 1.77-1.77V1.77c0-.98-.79-1.77-1.77-1.77zM7.5 20.5H3.5V9.5h4zM5.5 8c-1.38 0-2.5-1.12-2.5-2.5S4.12 3 5.5 3s2.5 1.12 2.5 2.5S6.88 8 5.5 8zm15 12.5h-4V14.28c0-1.87-.04-3.64-2.22-3.64-2.22 0-2.56 1.73-2.56 3.53v6.33h-4V9.5h4v1.86c.55-1.07 1.95-2.23 3.92-2.23 4.2 0 4.97 2.76 4.97 6.33V20.5z"/></svg>
+        </a>
+        <a href="https://github.com/parthbhagwat22" target="_blank" aria-label="GitHub Profile">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"><path d="M12 0c-6.626 0-12 5.373-12 12 0 5.302 3.438 9.8 8.207 11.387.6.111.82-.26.82-.576v-2.09c-3.338.724-4.04-1.61-4.04-1.61-.546-1.386-1.332-1.755-1.332-1.755-1.088-.745.083-.73.083-.73 1.205.084 1.838 1.238 1.838 1.238 1.07 1.835 2.809 1.304 3.492.997.108-.775.419-1.304.762-1.605-2.665-.3-5.466-1.332-5.466-5.93 0-1.31.468-2.38 1.236-3.22-.124-.3-1.688-8.528.257-8.736 1.916.208 3.513 1.554 4.09 3.992.577-.28 1.2-.423 1.832-.423.633 0 1.255.143 1.832.423.577-2.438 2.174-3.784 4.09-3.992 1.945.208.581 8.436.457 8.736.768.84 1.236 1.91 1.236 3.22 0 4.61-2.802 5.626-5.474 5.926.432.37.823 1.102.823 2.222V23.79c0 .316.216.687.828.576C20.562 21.8 24 17.302 24 12c0-6.627-5.373-12-12-12z"/></svg>
+        </a>
+    </div>
+</section>
+
+<footer>
+    © 2025 Parth Vinay Bhagwat. Built with AI precision, guided by my words.
+</footer>
+
+<script>
+    // NAV BACKGROUND ON SCROLL
+    window.addEventListener('scroll', function(){
+        const header = document.querySelector('header');
+        header.classList.toggle('scrolled', window.scrollY > 10);
+    });
+
+    // INTERSECTION OBSERVER WITH STAGGER
+    const observer = new IntersectionObserver(entries=>{
+        entries.forEach(entry=>{
+            if(entry.isIntersecting){
+                if(entry.target.classList.contains('card')){
+                    const index = [...entry.target.parentNode.children].indexOf(entry.target);
+                    setTimeout(()=> entry.target.classList.add('visible'), index * 200);
+                } else {
+                    entry.target.classList.add('visible');
+                }
+            }
+        });
+    }, {threshold:0.1});
+
+    document.querySelectorAll('.fade-in, .card, .skill-badge, .hero').forEach(el=>observer.observe(el));
+</script>
+
+</body>
+</html>
